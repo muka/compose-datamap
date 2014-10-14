@@ -1,0 +1,20 @@
+{
+    "name": "compose-datamap",
+    "description": "Sync external data id with compose",
+    "version": "0.1.0",
+    "homepage": "https://githubopenair.mobi",
+    "author": "muka",
+    "license": "Apache2",
+    "main": "index.js",
+    "keywords": ["compose","IoT"],
+    "repository" : {
+        "type" : "git",
+        "url" : "https://bitbucket.org/lcapra-cn/compose-openair.git"
+    },
+    "dependencies": {
+        "compose.io": "compose-eu/Appcelerator",
+        "bluebird": "*",
+        "then-redis": "*"
+    },
+    "devDependencies": {}
+}
