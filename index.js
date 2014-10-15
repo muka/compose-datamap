@@ -1,7 +1,7 @@
 
 var lib = module.exports = {};
 
-var config = lib.config = require("./config");
+var config = lib.config = {};
 
 var Promise = require("bluebird");
 var compose = require("compose.io");
@@ -124,3 +124,6 @@ lib.setup = function(_config) {
             d("Done!");
         });
 };
+
+//var c = require("./config");
+//lib.setup(c);
