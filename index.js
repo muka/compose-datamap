@@ -10,18 +10,20 @@ var redis = require('then-redis');
 config.debug = false;
 config.debug = process.env.DEBUG || config.debug;
 
-config.compose.debug = config.debug;
-
 var d = function() { config.debug && console.log.apply(console, arguments) };
 
 var createApi = function() {
 
+    lib.ServiceObject = lib.api.lib.ServiceObject;
+
     lib.set = function(key, val) {
-        return lib.db.set(key, val);
+        return lib.db.set(key, JSON.stringify(val));
     };
 
     lib.get = function(key) {
-        return lib.db.get(key);
+        return lib.db.get(key).then(function(val) {
+            return Promise.resolve(JSON.parse(val));
+        });
     };
 
     lib.del = function(key) {
@@ -33,41 +35,36 @@ var createApi = function() {
             return lib.set(code, {
                 updated: (new Date).getTime(),
                 soid: so.id,
+            }).then(function() {
+                return Promise.resolve(so);
             });
         });
     };
 
-    lib.delete = function(code) {
+    lib.delete = function(code, deleteSo) {
+        deleteSo = typeof deleteSo === false || !deleteSo ? false : true
         return lib.get(code).then(function(val) {
 
             if(!val || !val.soid) {
                 throw new Error("Key not found: %s", code);
             }
 
-            return new Promise(function(ok, ko) {
-                return lib.api.delete(val.soid)
-                    .then(function(so) {
-                        ok(so, val.updated);
-                    })
-                    .catch(ko);
-            });
+            if(!deleteSo) {
+                return Promise.resolve();
+            }
+
+            return lib.api.delete(val.soid);
         });
     };
 
-    lib.load = function(code) {
+    lib.read = function(code) {
         return lib.get(code).then(function(val) {
 
             if(!val || !val.soid) {
-                throw new Error("Key not found: %s", code);
+                throw new Error("Key not found: " + code);
             }
 
-            return new Promise(function(ok, ko) {
-                return lib.api.load(val.soid)
-                    .then(function(so) {
-                        ok(so, val.updated);
-                    })
-                    .catch(ko);
-            });
+            return lib.api.load(val.soid)
         });
     };
 
@@ -86,15 +83,11 @@ var createApi = function() {
                 throw new Error("Key not found: %s", code);
             }
 
-            return new Promise(function(ok, ko) {
-
-                var so = new lib.api.lib.ServiceObject(serviceObject);
-                return so.update()
-                    .then(function() {
-                        ok(this, val.updated);
-                    })
-                    .catch(ko);
+            var so = new lib.ServiceObject(serviceObject);
+            return so.update().then(function() {
+                return Promise.resolve(this);
             });
+
         });
     };
 
@@ -110,6 +103,9 @@ var redisConnection = function(api) {
 lib.setup = function(_config) {
     d("Starting up..");
     config = _config || config;
+
+    config.compose.debug = config.debug;
+
     return compose.setup(config.compose)
 
         .then(redisConnection)
