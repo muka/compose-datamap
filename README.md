@@ -22,7 +22,7 @@ var config = {
     debug: false,
 
     // prefix for the keys in redis, default to "compose"
-    // ensure you use one to avoid that import/export impact on other data
+    // ensure you use one to avoid that ops (like import/export) impacts on other data
     key_prefix: "compose",
 
     // a string or object compatible with then-redis
