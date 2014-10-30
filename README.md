@@ -13,6 +13,61 @@ Small library to match external IDs with service objects id.
 
 Review settings in `map-config.js` to match your settings
 
+##Configuration
+
+```
+var config = {
+
+    // enable debug?
+    debug: false,
+
+    // prefix for the keys in redis, default to "compose"
+    // ensure you use one to avoid that import/export impact on other data
+    key_prefix: "compose",
+
+    // a string or object compatible with then-redis
+    // https://github.com/mjackson/then-redis
+    redis: 'tcp://localhost:6379',
+
+    // a string or object compatible with compose.io
+    // https://github.com/compose-eu/Appcelerator/
+    compose: {
+        debug: false,
+        apiKey: 'your api key',
+        transport: 'http',
+    },
+};
+
+require("compose-datamap").setup(config).then(function(mapper){
+
+    // NOTE: All methods return a Promise
+
+    // setter
+    // serviceObject has to have an "id" property
+    // mapper.set(key, serviceObject)
+    // // .then(function() { ... })
+
+    // getter
+    // mapper.get(key)
+
+
+    // create
+    // then has so  as argument, which is a compose.io ServiceObject instance
+    // mapper.create(key, serviceObject).then(function(so) {})
+
+    // read
+    // mapper.read(key).then(function(so) {})
+
+    // update
+    // mapper.update(key, serviceObject).then(function(so) {})
+
+    // delete
+    // mapper.update(key).then(function() {})
+
+});
+
+```
+
 
 ##Usage
 
@@ -56,7 +111,7 @@ Review settings in `map-config.js` to match your settings
 
 ```
 
-##Export / Import
+##Import & Export
 
 It is possible to migrate the mappings with `export` and `import`
 
