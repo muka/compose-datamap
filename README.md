@@ -15,7 +15,7 @@ Review settings in `map-config.js` to match your settings
 
 ##Configuration
 
-```
+```javascript
 var config = {
 
     // enable debug?
@@ -71,7 +71,7 @@ require("compose-datamap").setup(config).then(function(mapper){
 
 ##Usage
 
-```
+```javascript
 
     var mapper = require('compose-datamap');
     mapper.setup(require('./map-config')).then(function() {
@@ -117,7 +117,7 @@ It is possible to migrate the mappings with `export` and `import`
 
 ###Export
 
-```
+```javascript
     mapper.setup(config).then(function() {
         return mapper.export();
     })
@@ -130,7 +130,7 @@ It is possible to migrate the mappings with `export` and `import`
 
 ###Import
 
-```
+```javascript
     var map = require('./piped-export.json')
     mapper.setup(config).then(function() {
         return mapper.import(map);
