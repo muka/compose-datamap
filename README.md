@@ -52,7 +52,7 @@ require("compose-datamap").setup(config).then(function(mapper){
 
 
     // create
-    // then has so  as argument, which is a compose.io ServiceObject instance
+    // `.then` has as argument a compose.io ServiceObject instance
     // mapper.create(key, serviceObject).then(function(so) {})
 
     // read
