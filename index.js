@@ -95,6 +95,44 @@ var createApi = function() {
         });
     };
 
+    lib.clear = function(pattern, dropServiceObjects) {
+        dropServiceObjects = dropServiceObjects === true ? true : false;
+        var key = getKey(pattern, "");
+        d("Deleting %s", key);
+        return lib.db.keys(key).then(function(list) {
+
+            if(!list.length) {
+                d('None found for %s', key)
+                return Promise.resolve([]);
+            }
+
+            var count = 0;
+            return Promise.all(list)
+                .each(function(key) {
+
+                    if(dropServiceObjects) {
+
+                        return lib.read(key).then(function(so) {
+                            return so.delete();
+                        })
+                        .then(function() {
+                            return Promise.resolve(key);
+                        })
+                    }
+
+                    return Promise.resolve(key);
+                })
+                .each(function(key) {
+                    count++;
+                    return lib.del(key);
+                })
+                .then(function() {
+                    d("Deleted %s items of %s total found", count, list.length);
+                    return Promise.resolve();
+                });
+        });
+    };
+
     lib.export = function() {
         var key = getKey("*", "");
         d("Exporting %s", key);
