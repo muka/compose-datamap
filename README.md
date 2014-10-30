@@ -140,3 +140,7 @@ It is possible to migrate the mappings with `export` and `import`
         console.log('Import completed.')
     });
 ```
+
+##License
+
+Apache2
